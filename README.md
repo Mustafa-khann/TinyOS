@@ -1,43 +1,47 @@
 # Tiny-Pi-OS
 
-Tiny-Pi-OS is a minimal operating system designed for the Raspberry Pi, developed in C and assembly. This project is an educational endeavor to understand the basics of operating system development, ARM architecture, and low-level programming.
+Tiny-Pi-OS is a minimal operating system built from scratch for the Raspberry Pi, developed and tested using QEMU for ARM emulation. This project aims to provide a basic understanding of OS development, including bootloader setup, kernel development, process management, and basic I/O handling.
 
-## Project Goals
+## Table of Contents
 
-- Develop a basic bootloader in assembly.
-- Implement core kernel features in C.
-- Set up basic I/O operations and memory management.
-- Implement process management, context switching, and a simple scheduler.
-- Add support for basic file systems (e.g., FAT32).
-- Optimize and test the operating system using QEMU.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Development](#development)
+- [Project Timeline](#project-timeline)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
-## Project Timeline
+## Introduction
 
-### Week 1 (July 29 - August 4)
-- Set up development environment.
-- Create a basic bootloader.
-- Get a "Hello, World!" running on QEMU.
+Tiny-Pi-OS is a personal project aimed at creating a simple operating system for the Raspberry Pi. It includes basic functionalities such as a bootloader, a simple kernel, memory management, process scheduling, and basic I/O operations.
 
-### Week 2 (August 5 - August 11)
-- Implement basic kernel features.
-- Set up basic I/O and memory management.
+## Features
 
-### Week 3 (August 12 - August 18)
-- Implement process management and task switching.
-- Develop a simple scheduler.
+- Basic Bootloader in Assembly
+- Simple Kernel in C
+- Memory Management
+- Basic I/O Handling
+- Process Management and Scheduling
+- File System Support (FAT32)
+- Interrupt Handling
 
-### Week 4 (August 19 - August 25)
-- Add advanced features like file system support.
-- Optimize and debug the OS.
+## Requirements
 
-### Final Days (August 26 - August 28)
-- Comprehensive testing and finalization.
-- Prepare project documentation and report.
+- ARM Cross-Compiler (GCC Toolchain)
+- QEMU for ARM Emulation
+- Make
+- Git
 
-## Getting Started
+## Installation
 
-### Prerequisites
+### Setting up the Development Environment
 
-- **ARM Cross-Compiler**: Install the GCC toolchain for ARM.
-  ```sh
-  sudo apt-get install gcc-arm-none-eabi
+1. **Install ARM Cross-Compiler:**
+
+   On Ubuntu:
+   ```sh
+   sudo apt-get install gcc-arm-none-eabi
