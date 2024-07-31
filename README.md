@@ -53,7 +53,7 @@ Tiny-Pi-OS is a personal project aimed at creating a simple operating system for
 ### Building and Running Tiny-Pi-OS
 
 1. **Build the OS:** `make`
-2. **Run the OS in QEMU:** `qemu-system-arm -M versatilepb -kernel kernel.img -serial stdio`
+2. **Run the OS in QEMU:** `qemu-system-arm -M raspi2b -kernel build/kernel.img -serial stdio`
 
 **Development**
 
