@@ -1,4 +1,4 @@
-# Tiny-Pi-OS
+# TinyOS
 
 A minimal operating system built from scratch for the Raspberry Pi, developed and tested using QEMU for ARM emulation.
 
@@ -46,7 +46,7 @@ Tiny-Pi-OS is a personal project aimed at creating a simple operating system for
 2. **Install QEMU:**
     * On Ubuntu: `sudo apt-get install qemu-system-arm`
     * On macOS: `brew install qemu`
-3. **Clone the Repository:** `git clone https://github.com/yourusername/tiny-pi-os.git`
+3. **Clone the Repository:** `git clone https://github.com/mustafa-khann/tinyOS.git`
 
 **Usage**
 
