@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+
 // Memory-Mapped I/O output
 static inline void mmio_write(uint32_t reg, uint32_t data) {
     *(volatile uint32_t*)reg = data;
@@ -28,5 +29,6 @@ void uart_init(void);
 void uart_putc(unsigned char c);
 void uart_puts(const char* str);
 unsigned char uart_getc(void);
+char* itoa(int value, int base);
 
 #endif // UART_H

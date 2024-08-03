@@ -33,7 +33,7 @@ void dump_memory(unsigned char* start, int length) {
     for (int i = 0; i < length; i++) {
         if (i % 16 == 0) {
             uart_puts("\n");
-            uart_puts(itoa((unsigned int)(start + i), 16));
+            uart_puts(itoa((unsigned int)*(start + i), 16));
             uart_puts(": ");
         }
         uart_puts(itoa(start[i], 16));
@@ -90,9 +90,9 @@ void kernel_main(void) {
     uart_puts("Framebuffer initialized\n");
 
     // Draw black background
-    for (int y = 0; y < get_height(); y++) {
-        for (int x = 0; x < get_width(); x++) {
-            put_pixel(x, y, 255,255,255);  // Black
+    for (unsigned int y = 0; y < get_height(); y++) {
+        for (unsigned int x = 0; x < get_width(); x++) {
+            put_pixel(x, y, 0, 0, 0);  // Black
         }
     }
     uart_puts("Background drawn\n");
@@ -100,7 +100,7 @@ void kernel_main(void) {
     // Draw colored rectangles for debugging
     for (int y = 0; y < 50; y++) {
         for (int x = 0; x < 50; x++) {
-            put_pixel(x, y, 255, 255, 0);  // Red
+            put_pixel(x, y, 255, 0, 0);  // Red
             put_pixel(x + 60, y, 0, 255, 0);  // Green
             put_pixel(x + 120, y, 0, 0, 255);  // Blue
         }

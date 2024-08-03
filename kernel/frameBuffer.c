@@ -40,13 +40,13 @@ void framebuffer_init(void) {
     uart_puts("Width: "); uart_puts(itoa(width, 10)); uart_puts("\n");
     uart_puts("Height: "); uart_puts(itoa(height, 10)); uart_puts("\n");
     uart_puts("Pitch: "); uart_puts(itoa(pitch, 10)); uart_puts("\n");
-    uart_puts("Framebuffer address: "); uart_puts(itoa((unsigned int)fb, 16)); uart_puts("\n");
+    uart_puts("Framebuffer address: "); uart_puts(itoa((unsigned int)fb[0], 16)); uart_puts("\n");
 }
 
-void put_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b) {
-    if (x >= 0 && x < width && y >= 0 && y < height) {
+void put_pixel(unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b) {
+    if (x < width && y < height) {
         unsigned int offs = (y * pitch) + (x * 4);
-        *((unsigned int*)(fb + offs)) = (r << 16) | (g << 8) | b;  // RGB format
+        *((unsigned int*)(fb + offs)) = (b << 16) | (g << 8) | r;  // RGB format
         __asm__ __volatile__ ("dsb sy");  // Data Synchronization Barrier
     }
 }
@@ -54,7 +54,7 @@ void put_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b) 
 void draw_char(int x, int y, char c, uint32_t color) {
     if (c < 32 || c > 127) return; // Unsupported characters
 
-    const unsigned char* glyph = font[c - 32];
+    const unsigned char * glyph = font[((unsigned char) c)-32];
 
     uart_puts("Drawing character '");
     uart_putc(c);
@@ -62,10 +62,10 @@ void draw_char(int x, int y, char c, uint32_t color) {
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if (glyph[i] & (1 << (7-j))) {
-                unsigned char r = color & 0xFF;
+            if (glyph[j] & (1 << i)) {
+                unsigned char r = (color >> 16) & 0xFF;
                 unsigned char g = (color >> 8) & 0xFF;
-                unsigned char b = (color >> 16) & 0xFF;
+                unsigned char b = color & 0xFF;
                 put_pixel(x + j, y + i, r, g, b);
                 uart_putc('#');
             } else {
