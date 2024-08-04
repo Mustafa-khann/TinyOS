@@ -43,21 +43,40 @@ void dump_memory(unsigned char* start, int length) {
 }
 
 
+// Function to draw a single character rotated 90 degrees clockwise and scaled up
+void draw_large_rotated_character(int x, int y, char c, uint32_t color, int scale) {
+    const unsigned char* char_bitmap = font[c - 32];
+    for (int dy = 0; dy < 8; dy++) {
+        for (int dx = 0; dx < 8; dx++) {
+            if (char_bitmap[dy] & (1 << (7 - dx))) {
+                // Draw a scaled block for each pixel, rotated 90 degrees clockwise
+                for (int sy = 0; sy < scale; sy++) {
+                    for (int sx = 0; sx < scale; sx++) {
+                        put_pixel(x + dy * scale + sy, y + (7 - dx) * scale + sx,
+                                  (color >> 16) & 0xFF,
+                                  (color >> 8) & 0xFF,
+                                  color & 0xFF);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Function to draw a string with each character rotated and scaled
+void draw_large_rotated_string(int x, int y, const char* str, uint32_t color, int scale) {
+    while (*str) {
+        draw_large_rotated_character(x, y, *str, color, scale);
+        x += (8 * scale) + scale; // Move to the right (character width + spacing)
+        str++;
+    }
+}
+
 void kernel_main(void) {
-
-    volatile const unsigned char test_font[5][8] = {
-        {0x00, 0x00, 0x5F, 0x00, 0x00, 0x00, 0x00, 0x00},   // !
-        {0x00, 0x07, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00},   // "
-        {0x14, 0x7F, 0x14, 0x7F, 0x14, 0x00, 0x00, 0x00},   // #
-        {0x24, 0x2A, 0x7F, 0x2A, 0x12, 0x00, 0x00, 0x00},   // $
-        {0x23, 0x13, 0x08, 0x64, 0x62, 0x00, 0x00, 0x00},   // %
-    };
-
-
     uart_init();
     uart_puts("Kernel started\n");
 
-    // Print memory layout
+    // Print memory layout (keeping this part unchanged)
     extern char __start, __end, __rodata_start, __rodata_end;
     uart_puts("Memory layout:\n");
     uart_puts("Kernel start: 0x"); uart_puts(itoa((unsigned int)&__start, 16)); uart_puts("\n");
@@ -65,26 +84,6 @@ void kernel_main(void) {
     uart_puts("Rodata end:   0x"); uart_puts(itoa((unsigned int)&__rodata_end, 16)); uart_puts("\n");
     uart_puts("Kernel end:   0x"); uart_puts(itoa((unsigned int)&__end, 16)); uart_puts("\n");
     uart_puts("Font address: 0x"); uart_puts(itoa((unsigned int)font, 16)); uart_puts("\n");
-
-    // Debug font data
-    uart_puts("Test font data:\n");
-    for (int i = 0; i < 5; i++) {
-        uart_puts("Character ");
-        uart_putc(i + 33);  // Start from '!'
-        uart_puts(": ");
-        for (int j = 0; j < 8; j++) {
-            uart_puts(itoa(test_font[i][j], 16));
-            uart_puts(" ");
-        }
-        uart_puts("\n");
-    }
-
-    for (int i = 0; i < 8; i++) {
-        uart_puts(itoa(font['A' - 32][i], 16));
-        uart_puts(" ");
-    }
-    uart_puts("\n");
-    uart_puts("Kernel started\n");
 
     framebuffer_init();
     uart_puts("Framebuffer initialized\n");
@@ -97,28 +96,24 @@ void kernel_main(void) {
     }
     uart_puts("Background drawn\n");
 
-    // Draw colored rectangles for debugging
-    for (int y = 0; y < 50; y++) {
-        for (int x = 0; x < 50; x++) {
-            put_pixel(x, y, 255, 0, 0);  // Red
-            put_pixel(x + 60, y, 0, 255, 0);  // Green
-            put_pixel(x + 120, y, 0, 0, 255);  // Blue
-        }
-    }
-    uart_puts("Debug rectangles drawn\n");
+    // Calculate center position for text
+    const char* welcome_text = "Welcome to TinyOS!";
+    int text_length = 18; // Length of "Welcome to TinyOS!"
+    int scale = 5; // Increase this value to make the font larger
+    int char_width = 8 * scale;
+    int char_height = 8 * scale;
+    int char_spacing = scale;
 
-    // Draw text
-    uint32_t text_color = 0xFFFF00;  // Yellow color
-    draw_string(100, 100, "Hello World!", text_color);
-    uart_puts("Text drawn to framebuffer\n");
+    int text_width = text_length * (char_width + char_spacing) - char_spacing;
+    int text_x = (get_width() - text_width) / 2;
+    int text_y = (get_height() - char_width) / 2; // Use char_width as height due to rotation
 
-    // Simple delay
-    for (volatile int i = 0; i < 10000000; i++) {}
+    // Draw centered text with large rotated characters
+    uint32_t text_color = 0xFFFFFF;  // White color
+    draw_large_rotated_string(text_x, text_y, welcome_text, text_color, scale);
+    uart_puts("Welcome text drawn to framebuffer\n");
 
     uart_puts("Kernel execution complete\n");
-
-    uart_puts("Dumping font memory:\n");
-    dump_memory((unsigned char*)font, 128);
 
     while(1) {}
 }
