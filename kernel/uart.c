@@ -23,3 +23,10 @@ unsigned char uart_getc(void) {
     while (mmio_read(UART0_FR) & 0x10) {}
     return mmio_read(UART0_DR);
 }
+
+int uart_getc_nb(void) {
+    if (mmio_read(UART0_FR) & 0x10) {
+        return -1; // No data available
+    }
+    return mmio_read(UART0_DR);
+}

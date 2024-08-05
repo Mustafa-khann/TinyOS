@@ -2,17 +2,7 @@
 #define UART_H
 
 #include <stdint.h>
-
-
-// Memory-Mapped I/O output
-static inline void mmio_write(uint32_t reg, uint32_t data) {
-    *(volatile uint32_t*)reg = data;
-}
-
-// Memory-Mapped I/O input
-static inline uint32_t mmio_read(uint32_t reg) {
-    return *(volatile uint32_t*)reg;
-}
+#include "gpio.h"  // Include gpio.h for mmio_read and mmio_write definitions
 
 // UART registers
 #define UART0_BASE    0x3F201000
@@ -29,6 +19,9 @@ void uart_init(void);
 void uart_putc(unsigned char c);
 void uart_puts(const char* str);
 unsigned char uart_getc(void);
-char* itoa(int value, int base);
+int uart_getc_nb(void);
+
+// Declare itoa as an external function
+extern char* itoa(int value, int base);
 
 #endif // UART_H
