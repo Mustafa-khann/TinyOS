@@ -9,224 +9,375 @@ Linker script and memory map
                 0x0000000000008000                . = 0x8000
                 0x0000000000008000                __start = .
 
-.text           0x0000000000008000     0x2adc
+.text           0x0000000000008000     0x4ad0
  *(.text.boot)
  .text.boot     0x0000000000008000       0xac build/boot/boot.o
                 0x0000000000008000                _start
  *(.text)
- .text          0x00000000000080ac      0xd00 build/kernel/frameBuffer.o
-                0x00000000000080ac                framebuffer_init
-                0x00000000000083ec                put_pixel
-                0x00000000000084c8                draw_char
-                0x00000000000086e4                draw_string
-                0x00000000000087e0                draw_large_rotated_character
-                0x0000000000008968                draw_large_rotated_string
-                0x00000000000089ec                get_width
-                0x0000000000008a14                get_height
-                0x0000000000008a3c                delay
-                0x0000000000008ab0                clearScreen
-                0x0000000000008b40                draw_cursor
-                0x0000000000008bbc                clear_cursor
-                0x0000000000008c38                scroll_screen
- .text          0x0000000000008dac     0x13c8 build/kernel/kernel.o
-                0x0000000000008dac                timer_interrupt_handler
-                0x0000000000008df0                get_system_clock
-                0x0000000000008e24                get_memory_stats
-                0x0000000000008e8c                process_command
-                0x0000000000009974                handle_keyboard_input
-                0x0000000000009c04                itoa
-                0x0000000000009d00                dump_memory
-                0x0000000000009df8                kernel_main
- .text          0x000000000000a174       0xcc build/kernel/mailbox.o
-                0x000000000000a174                mailbox_write
-                0x000000000000a1d4                mailbox_read
- .text          0x000000000000a240      0x3f4 build/kernel/ps2Keyboard.o
-                0x000000000000a298                ps2Keyboard_init
-                0x000000000000a3a4                ps2Keyboard_handler
-                0x000000000000a598                ps2Keyboard_getc
- .text          0x000000000000a634      0x2c8 build/kernel/string.o
-                0x000000000000a634                strcmp
-                0x000000000000a6b4                strncmp
-                0x000000000000a764                strcpy
-                0x000000000000a7c4                strcat
-                0x000000000000a844                memset
-                0x000000000000a8a8                strlen
- .text          0x000000000000a8fc      0x1e0 build/kernel/uart.o
-                0x000000000000a954                uart_init
-                0x000000000000a9b4                uart_putc
-                0x000000000000aa08                uart_puts
-                0x000000000000aa54                uart_getc
-                0x000000000000aa98                uart_getc_nb
- .text          0x000000000000aadc        0x0 build/boot/boot.o
+ .text          0x00000000000080ac      0x2a8 build/kernel/directory.o
+                0x00000000000080ac                directoryOpen
+                0x000000000000819c                directory_read
+                0x00000000000082b8                directory_seek
+ .text          0x0000000000008354      0x46c build/kernel/file.o
+                0x0000000000008354                file_open
+                0x000000000000843c                file_close
+                0x00000000000084d4                file_read
+                0x000000000000859c                file_write
+                0x0000000000008664                file_seek
+ .text          0x00000000000087c0      0xd00 build/kernel/frameBuffer.o
+                0x00000000000087c0                framebuffer_init
+                0x0000000000008b00                put_pixel
+                0x0000000000008bdc                draw_char
+                0x0000000000008df8                draw_string
+                0x0000000000008ef4                draw_large_rotated_character
+                0x000000000000907c                draw_large_rotated_string
+                0x0000000000009100                get_width
+                0x0000000000009128                get_height
+                0x0000000000009150                delay
+                0x00000000000091c4                clearScreen
+                0x0000000000009254                draw_cursor
+                0x00000000000092d0                clear_cursor
+                0x000000000000934c                scroll_screen
+ .text          0x00000000000094c0      0x560 build/kernel/fs.o
+                0x00000000000094c0                fs_init
+                0x0000000000009500                fs_create_file
+                0x00000000000095d4                fs_create_directory
+                0x00000000000096a8                fs_list_directory
+                0x0000000000009844                fs_delete
+                0x0000000000009960                fs_rename
+ .text          0x0000000000009a20     0x18b0 build/kernel/kernel.o
+                0x0000000000009a20                timer_interrupt_handler
+                0x0000000000009a64                get_system_clock
+                0x0000000000009a98                get_memory_stats
+                0x0000000000009b00                parse_command
+                0x0000000000009d1c                process_command
+                0x000000000000aad0                handle_keyboard_input
+                0x000000000000ad60                itoa
+                0x000000000000ae5c                dump_memory
+                0x000000000000af54                kernel_main
+ .text          0x000000000000b2d0       0xcc build/kernel/mailbox.o
+                0x000000000000b2d0                mailbox_write
+                0x000000000000b330                mailbox_read
+ .text          0x000000000000b39c      0x110 build/kernel/memory.o
+                0x000000000000b39c                memoryInit
+                0x000000000000b3d0                malloc
+                0x000000000000b48c                free
+ .text          0x000000000000b4ac      0x330 build/kernel/pmm.o
+                0x000000000000b4ac                pmmInit
+                0x000000000000b608                pmmAllocPage
+                0x000000000000b6b8                pmmFreePage
+                0x000000000000b740                pmmGetFreePageCount
+ .text          0x000000000000b7dc      0x45c build/kernel/process.o
+                0x000000000000b7dc                process_init
+                0x000000000000b808                createProcess
+                0x000000000000b9cc                terminateProcess
+                0x000000000000baac                yieldProcess
+                0x000000000000baf0                processGetCurrent
+                0x000000000000bb18                processSchedule
+ .text          0x000000000000bc38      0x3f4 build/kernel/ps2Keyboard.o
+                0x000000000000bc90                ps2Keyboard_init
+                0x000000000000bd9c                ps2Keyboard_handler
+                0x000000000000bf90                ps2Keyboard_getc
+ .text          0x000000000000c02c      0x470 build/kernel/string.o
+                0x000000000000c02c                strcmp
+                0x000000000000c0ac                strncmp
+                0x000000000000c15c                strcpy
+                0x000000000000c1bc                strcat
+                0x000000000000c23c                memset
+                0x000000000000c2a0                strlen
+                0x000000000000c2f4                memmove
+                0x000000000000c3dc                strncpy
+ .text          0x000000000000c49c      0x1e0 build/kernel/uart.o
+                0x000000000000c4f4                uart_init
+                0x000000000000c554                uart_putc
+                0x000000000000c5a8                uart_puts
+                0x000000000000c5f4                uart_getc
+                0x000000000000c638                uart_getc_nb
+ .text          0x000000000000c67c      0x454 build/kernel/vmm.o
+                0x000000000000c67c                vmmInit
+                0x000000000000c7c8                vmmMapPage
+                0x000000000000c83c                vmmUnmapPage
+                0x000000000000c89c                vmmAllocPages
+                0x000000000000c9f0                vmmFreePages
+ .text          0x000000000000cad0        0x0 build/boot/boot.o
 
-.glue_7         0x000000000000aadc        0x0
- .glue_7        0x000000000000aadc        0x0 linker stubs
+.glue_7         0x000000000000cad0        0x0
+ .glue_7        0x000000000000cad0        0x0 linker stubs
 
-.glue_7t        0x000000000000aadc        0x0
- .glue_7t       0x000000000000aadc        0x0 linker stubs
+.glue_7t        0x000000000000cad0        0x0
+ .glue_7t       0x000000000000cad0        0x0 linker stubs
 
-.vfp11_veneer   0x000000000000aadc        0x0
- .vfp11_veneer  0x000000000000aadc        0x0 linker stubs
+.vfp11_veneer   0x000000000000cad0        0x0
+ .vfp11_veneer  0x000000000000cad0        0x0 linker stubs
 
-.v4_bx          0x000000000000aadc        0x0
- .v4_bx         0x000000000000aadc        0x0 linker stubs
+.v4_bx          0x000000000000cad0        0x0
+ .v4_bx         0x000000000000cad0        0x0 linker stubs
 
-.iplt           0x000000000000aadc        0x0
- .iplt          0x000000000000aadc        0x0 build/kernel/frameBuffer.o
+.iplt           0x000000000000cad0        0x0
+ .iplt          0x000000000000cad0        0x0 build/kernel/directory.o
 
-.rodata         0x000000000000aadc      0xc38
-                0x000000000000aadc                __rodata_start = .
+.rodata         0x000000000000cad0      0xcfc
+                0x000000000000cad0                __rodata_start = .
  *(.rodata)
- .rodata        0x000000000000aadc       0xb0 build/kernel/frameBuffer.o
- .rodata        0x000000000000ab8c      0x387 build/kernel/kernel.o
+ .rodata        0x000000000000cad0        0xa build/kernel/directory.o
+ *fill*         0x000000000000cada        0x2 
+ .rodata        0x000000000000cadc       0xb0 build/kernel/frameBuffer.o
+ .rodata        0x000000000000cb8c      0x43f build/kernel/kernel.o
  *(.rodata.*)
  *(.font)
- *fill*         0x000000000000af13        0x1 
- .font          0x000000000000af14      0x400 build/kernel/frameBuffer.o
- .font          0x000000000000b314      0x400 build/kernel/kernel.o
-                0x000000000000b714                __rodata_end = .
+ *fill*         0x000000000000cfcb        0x1 
+ .font          0x000000000000cfcc      0x400 build/kernel/frameBuffer.o
+ .font          0x000000000000d3cc      0x400 build/kernel/kernel.o
+                0x000000000000d7cc                __rodata_end = .
 
-.rel.dyn        0x000000000000b714        0x0
- .rel.iplt      0x000000000000b714        0x0 build/kernel/frameBuffer.o
- .rel.got       0x000000000000b714        0x0 build/kernel/frameBuffer.o
+.rel.dyn        0x000000000000d7cc        0x0
+ .rel.iplt      0x000000000000d7cc        0x0 build/kernel/directory.o
+ .rel.got       0x000000000000d7cc        0x0 build/kernel/directory.o
 
-.data           0x000000000000b714       0x30
-                0x000000000000b714                __data_start = .
+.data           0x000000000000d7cc       0x34
+                0x000000000000d7cc                __data_start = .
  *(.data)
- .data          0x000000000000b714        0x0 build/kernel/frameBuffer.o
- .data          0x000000000000b714       0x30 build/kernel/kernel.o
- .data          0x000000000000b744        0x0 build/kernel/mailbox.o
- .data          0x000000000000b744        0x0 build/kernel/ps2Keyboard.o
- .data          0x000000000000b744        0x0 build/kernel/string.o
- .data          0x000000000000b744        0x0 build/kernel/uart.o
- .data          0x000000000000b744        0x0 build/boot/boot.o
-                0x000000000000b744                __data_end = .
+ .data          0x000000000000d7cc        0x0 build/kernel/directory.o
+ .data          0x000000000000d7cc        0x0 build/kernel/file.o
+ .data          0x000000000000d7cc        0x0 build/kernel/frameBuffer.o
+ .data          0x000000000000d7cc        0x0 build/kernel/fs.o
+ .data          0x000000000000d7cc       0x30 build/kernel/kernel.o
+ .data          0x000000000000d7fc        0x0 build/kernel/mailbox.o
+ .data          0x000000000000d7fc        0x0 build/kernel/memory.o
+ .data          0x000000000000d7fc        0x0 build/kernel/pmm.o
+ .data          0x000000000000d7fc        0x4 build/kernel/process.o
+ .data          0x000000000000d800        0x0 build/kernel/ps2Keyboard.o
+ .data          0x000000000000d800        0x0 build/kernel/string.o
+ .data          0x000000000000d800        0x0 build/kernel/uart.o
+ .data          0x000000000000d800        0x0 build/kernel/vmm.o
+ .data          0x000000000000d800        0x0 build/boot/boot.o
+                0x000000000000d800                __data_end = .
 
-.igot.plt       0x000000000000b744        0x0
- .igot.plt      0x000000000000b744        0x0 build/kernel/frameBuffer.o
+.igot.plt       0x000000000000d800        0x0
+ .igot.plt      0x000000000000d800        0x0 build/kernel/directory.o
 
-.got            0x000000000000b744       0x28
- .got           0x000000000000b744       0x28 build/kernel/frameBuffer.o
+.got            0x000000000000d800       0x28
+ .got           0x000000000000d800       0x28 build/kernel/directory.o
 
-.got.plt        0x000000000000b76c        0xc
- .got.plt       0x000000000000b76c        0xc build/kernel/frameBuffer.o
-                0x000000000000b76c                _GLOBAL_OFFSET_TABLE_
+.got.plt        0x000000000000d828        0xc
+ .got.plt       0x000000000000d828        0xc build/kernel/directory.o
+                0x000000000000d828                _GLOBAL_OFFSET_TABLE_
 
-.data.rel       0x000000000000b778        0x4
- .data.rel      0x000000000000b778        0x4 build/kernel/kernel.o
-                0x000000000000c000                . = ALIGN (0x1000)
-                0x000000000000c000                __bss_start = .
+.data.rel       0x000000000000d834        0x4
+ .data.rel      0x000000000000d834        0x4 build/kernel/kernel.o
 
-.bss            0x000000000000c000      0x259
+.data.rel.local
+                0x000000000000d838        0x8
+ .data.rel.local
+                0x000000000000d838        0x8 build/kernel/memory.o
+                0x000000000000e000                . = ALIGN (0x1000)
+                0x000000000000e000                __bss_start = .
+
+.bss            0x000000000000e000   0x126ddc
  *(.bss)
- .bss           0x000000000000c000       0x14 build/kernel/frameBuffer.o
-                0x000000000000c010                fb_global
- .bss           0x000000000000c014      0x131 build/kernel/kernel.o
-                0x000000000000c014                cmd_buffer
-                0x000000000000c114                cmd_index
-                0x000000000000c118                cursor_x
-                0x000000000000c11c                cursor_y
-                0x000000000000c120                system_ticks
- .bss           0x000000000000c145        0x0 build/kernel/mailbox.o
- *fill*         0x000000000000c145        0x3 
- .bss           0x000000000000c148      0x111 build/kernel/ps2Keyboard.o
- .bss           0x000000000000c259        0x0 build/kernel/string.o
- .bss           0x000000000000c259        0x0 build/kernel/uart.o
- .bss           0x000000000000c259        0x0 build/boot/boot.o
-                0x000000000000c259                __bss_end = .
-                0x000000000000c259                __end = .
+ .bss           0x000000000000e000       0x3c build/kernel/directory.o
+ .bss           0x000000000000e03c       0x78 build/kernel/file.o
+ .bss           0x000000000000e0b4       0x14 build/kernel/frameBuffer.o
+                0x000000000000e0c4                fb_global
+ .bss           0x000000000000e0c8     0x68b4 build/kernel/fs.o
+ .bss           0x000000000001497c      0x131 build/kernel/kernel.o
+                0x000000000001497c                cmd_buffer
+                0x0000000000014a7c                cmd_index
+                0x0000000000014a80                cursor_x
+                0x0000000000014a84                cursor_y
+                0x0000000000014a88                system_ticks
+ .bss           0x0000000000014aad        0x0 build/kernel/mailbox.o
+ *fill*         0x0000000000014aad        0x3 
+ .bss           0x0000000000014ab0   0x100000 build/kernel/memory.o
+ .bss           0x0000000000114ab0    0x20008 build/kernel/pmm.o
+ .bss           0x0000000000134ab8      0x20c build/kernel/process.o
+ .bss           0x0000000000134cc4      0x111 build/kernel/ps2Keyboard.o
+ .bss           0x0000000000134dd5        0x0 build/kernel/string.o
+ .bss           0x0000000000134dd5        0x0 build/kernel/uart.o
+ *fill*         0x0000000000134dd5        0x3 
+ .bss           0x0000000000134dd8        0x4 build/kernel/vmm.o
+ .bss           0x0000000000134ddc        0x0 build/boot/boot.o
+                0x0000000000134ddc                __bss_end = .
+                0x0000000000134ddc                __end = .
+LOAD build/kernel/directory.o
+LOAD build/kernel/file.o
 LOAD build/kernel/frameBuffer.o
+LOAD build/kernel/fs.o
 LOAD build/kernel/kernel.o
 LOAD build/kernel/mailbox.o
+LOAD build/kernel/memory.o
+LOAD build/kernel/pmm.o
+LOAD build/kernel/process.o
 LOAD build/kernel/ps2Keyboard.o
 LOAD build/kernel/string.o
 LOAD build/kernel/uart.o
+LOAD build/kernel/vmm.o
 LOAD build/boot/boot.o
 OUTPUT(build/kernel.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x0000000000000000     0x11a6
- .debug_info    0x0000000000000000      0x5f3 build/kernel/frameBuffer.o
- .debug_info    0x00000000000005f3      0x5be build/kernel/kernel.o
- .debug_info    0x0000000000000bb1       0x9e build/kernel/mailbox.o
- .debug_info    0x0000000000000c4f      0x1f8 build/kernel/ps2Keyboard.o
- .debug_info    0x0000000000000e47      0x1fe build/kernel/string.o
- .debug_info    0x0000000000001045      0x161 build/kernel/uart.o
+.debug_info     0x0000000000000000     0x23a6
+ .debug_info    0x0000000000000000      0x205 build/kernel/directory.o
+ .debug_info    0x0000000000000205      0x24c build/kernel/file.o
+ .debug_info    0x0000000000000451      0x5f3 build/kernel/frameBuffer.o
+ .debug_info    0x0000000000000a44      0x2e1 build/kernel/fs.o
+ .debug_info    0x0000000000000d25      0x69d build/kernel/kernel.o
+ .debug_info    0x00000000000013c2       0x9e build/kernel/mailbox.o
+ .debug_info    0x0000000000001460      0x14d build/kernel/memory.o
+ .debug_info    0x00000000000015ad      0x220 build/kernel/pmm.o
+ .debug_info    0x00000000000017cd      0x28d build/kernel/process.o
+ .debug_info    0x0000000000001a5a      0x1f8 build/kernel/ps2Keyboard.o
+ .debug_info    0x0000000000001c52      0x2c3 build/kernel/string.o
+ .debug_info    0x0000000000001f15      0x161 build/kernel/uart.o
+ .debug_info    0x0000000000002076      0x330 build/kernel/vmm.o
 
-.debug_abbrev   0x0000000000000000      0x5f1
- .debug_abbrev  0x0000000000000000      0x165 build/kernel/frameBuffer.o
- .debug_abbrev  0x0000000000000165      0x18d build/kernel/kernel.o
- .debug_abbrev  0x00000000000002f2       0x79 build/kernel/mailbox.o
- .debug_abbrev  0x000000000000036b       0xf8 build/kernel/ps2Keyboard.o
- .debug_abbrev  0x0000000000000463       0xbd build/kernel/string.o
- .debug_abbrev  0x0000000000000520       0xd1 build/kernel/uart.o
+.debug_abbrev   0x0000000000000000      0xe51
+ .debug_abbrev  0x0000000000000000      0x124 build/kernel/directory.o
+ .debug_abbrev  0x0000000000000124      0x10e build/kernel/file.o
+ .debug_abbrev  0x0000000000000232      0x165 build/kernel/frameBuffer.o
+ .debug_abbrev  0x0000000000000397      0x11f build/kernel/fs.o
+ .debug_abbrev  0x00000000000004b6      0x200 build/kernel/kernel.o
+ .debug_abbrev  0x00000000000006b6       0x79 build/kernel/mailbox.o
+ .debug_abbrev  0x000000000000072f       0xf3 build/kernel/memory.o
+ .debug_abbrev  0x0000000000000822      0x11c build/kernel/pmm.o
+ .debug_abbrev  0x000000000000093e      0x188 build/kernel/process.o
+ .debug_abbrev  0x0000000000000ac6       0xf8 build/kernel/ps2Keyboard.o
+ .debug_abbrev  0x0000000000000bbe       0xc2 build/kernel/string.o
+ .debug_abbrev  0x0000000000000c80       0xd1 build/kernel/uart.o
+ .debug_abbrev  0x0000000000000d51      0x100 build/kernel/vmm.o
 
-.debug_aranges  0x0000000000000000       0xc0
+.debug_aranges  0x0000000000000000      0x1a0
  .debug_aranges
-                0x0000000000000000       0x20 build/kernel/frameBuffer.o
+                0x0000000000000000       0x20 build/kernel/directory.o
  .debug_aranges
-                0x0000000000000020       0x20 build/kernel/kernel.o
+                0x0000000000000020       0x20 build/kernel/file.o
  .debug_aranges
-                0x0000000000000040       0x20 build/kernel/mailbox.o
+                0x0000000000000040       0x20 build/kernel/frameBuffer.o
  .debug_aranges
-                0x0000000000000060       0x20 build/kernel/ps2Keyboard.o
+                0x0000000000000060       0x20 build/kernel/fs.o
  .debug_aranges
-                0x0000000000000080       0x20 build/kernel/string.o
+                0x0000000000000080       0x20 build/kernel/kernel.o
  .debug_aranges
-                0x00000000000000a0       0x20 build/kernel/uart.o
+                0x00000000000000a0       0x20 build/kernel/mailbox.o
+ .debug_aranges
+                0x00000000000000c0       0x20 build/kernel/memory.o
+ .debug_aranges
+                0x00000000000000e0       0x20 build/kernel/pmm.o
+ .debug_aranges
+                0x0000000000000100       0x20 build/kernel/process.o
+ .debug_aranges
+                0x0000000000000120       0x20 build/kernel/ps2Keyboard.o
+ .debug_aranges
+                0x0000000000000140       0x20 build/kernel/string.o
+ .debug_aranges
+                0x0000000000000160       0x20 build/kernel/uart.o
+ .debug_aranges
+                0x0000000000000180       0x20 build/kernel/vmm.o
 
-.debug_line     0x0000000000000000      0xdac
- .debug_line    0x0000000000000000      0x4db build/kernel/frameBuffer.o
- .debug_line    0x00000000000004db      0x477 build/kernel/kernel.o
- .debug_line    0x0000000000000952       0x93 build/kernel/mailbox.o
- .debug_line    0x00000000000009e5      0x140 build/kernel/ps2Keyboard.o
- .debug_line    0x0000000000000b25      0x19a build/kernel/string.o
- .debug_line    0x0000000000000cbf       0xed build/kernel/uart.o
+.debug_line     0x0000000000000000     0x19f7
+ .debug_line    0x0000000000000000      0x123 build/kernel/directory.o
+ .debug_line    0x0000000000000123      0x178 build/kernel/file.o
+ .debug_line    0x000000000000029b      0x4db build/kernel/frameBuffer.o
+ .debug_line    0x0000000000000776      0x1f6 build/kernel/fs.o
+ .debug_line    0x000000000000096c      0x591 build/kernel/kernel.o
+ .debug_line    0x0000000000000efd       0x93 build/kernel/mailbox.o
+ .debug_line    0x0000000000000f90       0xbb build/kernel/memory.o
+ .debug_line    0x000000000000104b      0x174 build/kernel/pmm.o
+ .debug_line    0x00000000000011bf      0x1d8 build/kernel/process.o
+ .debug_line    0x0000000000001397      0x140 build/kernel/ps2Keyboard.o
+ .debug_line    0x00000000000014d7      0x23d build/kernel/string.o
+ .debug_line    0x0000000000001714       0xed build/kernel/uart.o
+ .debug_line    0x0000000000001801      0x1f6 build/kernel/vmm.o
 
-.debug_str      0x0000000000000000      0x556
- .debug_str     0x0000000000000000      0x20a build/kernel/frameBuffer.o
+.debug_str      0x0000000000000000      0xa3b
+ .debug_str     0x0000000000000000      0x1a2 build/kernel/directory.o
+                                        0x1ea (size before relaxing)
+ .debug_str     0x00000000000001a2       0x75 build/kernel/file.o
+                                        0x1e3 (size before relaxing)
+ .debug_str     0x0000000000000217      0x112 build/kernel/frameBuffer.o
                                         0x25c (size before relaxing)
- .debug_str     0x000000000000020a      0x1f3 build/kernel/kernel.o
-                                        0x351 (size before relaxing)
- .debug_str     0x00000000000003fd       0x39 build/kernel/mailbox.o
+ .debug_str     0x0000000000000329       0xbd build/kernel/fs.o
+                                        0x237 (size before relaxing)
+ .debug_str     0x00000000000003e6      0x1f3 build/kernel/kernel.o
+                                        0x36f (size before relaxing)
+ .debug_str     0x00000000000005d9       0x39 build/kernel/mailbox.o
                                          0xf3 (size before relaxing)
- .debug_str     0x0000000000000436       0xa5 build/kernel/ps2Keyboard.o
+ .debug_str     0x0000000000000612       0x3a build/kernel/memory.o
+                                        0x186 (size before relaxing)
+ .debug_str     0x000000000000064c       0x8a build/kernel/pmm.o
+                                        0x1e0 (size before relaxing)
+ .debug_str     0x00000000000006d6      0x124 build/kernel/process.o
+                                        0x26c (size before relaxing)
+ .debug_str     0x00000000000007fa       0xa5 build/kernel/ps2Keyboard.o
                                         0x1c8 (size before relaxing)
- .debug_str     0x00000000000004db       0x38 build/kernel/string.o
-                                        0x120 (size before relaxing)
- .debug_str     0x0000000000000513       0x43 build/kernel/uart.o
+ .debug_str     0x000000000000089f       0x41 build/kernel/string.o
+                                        0x130 (size before relaxing)
+ .debug_str     0x00000000000008e0       0x43 build/kernel/uart.o
                                         0x180 (size before relaxing)
+ .debug_str     0x0000000000000923      0x118 build/kernel/vmm.o
+                                        0x261 (size before relaxing)
 
 .comment        0x0000000000000000       0x33
- .comment       0x0000000000000000       0x33 build/kernel/frameBuffer.o
+ .comment       0x0000000000000000       0x33 build/kernel/directory.o
                                          0x34 (size before relaxing)
+ .comment       0x0000000000000033       0x34 build/kernel/file.o
+ .comment       0x0000000000000033       0x34 build/kernel/frameBuffer.o
+ .comment       0x0000000000000033       0x34 build/kernel/fs.o
  .comment       0x0000000000000033       0x34 build/kernel/kernel.o
  .comment       0x0000000000000033       0x34 build/kernel/mailbox.o
+ .comment       0x0000000000000033       0x34 build/kernel/memory.o
+ .comment       0x0000000000000033       0x34 build/kernel/pmm.o
+ .comment       0x0000000000000033       0x34 build/kernel/process.o
  .comment       0x0000000000000033       0x34 build/kernel/ps2Keyboard.o
  .comment       0x0000000000000033       0x34 build/kernel/string.o
  .comment       0x0000000000000033       0x34 build/kernel/uart.o
+ .comment       0x0000000000000033       0x34 build/kernel/vmm.o
 
 .ARM.attributes
                 0x0000000000000000       0x33
  .ARM.attributes
-                0x0000000000000000       0x35 build/kernel/frameBuffer.o
+                0x0000000000000000       0x35 build/kernel/directory.o
  .ARM.attributes
-                0x0000000000000035       0x35 build/kernel/kernel.o
+                0x0000000000000035       0x35 build/kernel/file.o
  .ARM.attributes
-                0x000000000000006a       0x35 build/kernel/mailbox.o
+                0x000000000000006a       0x35 build/kernel/frameBuffer.o
  .ARM.attributes
-                0x000000000000009f       0x35 build/kernel/ps2Keyboard.o
+                0x000000000000009f       0x35 build/kernel/fs.o
  .ARM.attributes
-                0x00000000000000d4       0x35 build/kernel/string.o
+                0x00000000000000d4       0x35 build/kernel/kernel.o
  .ARM.attributes
-                0x0000000000000109       0x35 build/kernel/uart.o
+                0x0000000000000109       0x35 build/kernel/mailbox.o
  .ARM.attributes
-                0x000000000000013e       0x29 build/boot/boot.o
+                0x000000000000013e       0x35 build/kernel/memory.o
+ .ARM.attributes
+                0x0000000000000173       0x35 build/kernel/pmm.o
+ .ARM.attributes
+                0x00000000000001a8       0x35 build/kernel/process.o
+ .ARM.attributes
+                0x00000000000001dd       0x35 build/kernel/ps2Keyboard.o
+ .ARM.attributes
+                0x0000000000000212       0x35 build/kernel/string.o
+ .ARM.attributes
+                0x0000000000000247       0x35 build/kernel/uart.o
+ .ARM.attributes
+                0x000000000000027c       0x35 build/kernel/vmm.o
+ .ARM.attributes
+                0x00000000000002b1       0x29 build/boot/boot.o
 
-.debug_frame    0x0000000000000000      0x590
- .debug_frame   0x0000000000000000      0x1c4 build/kernel/frameBuffer.o
- .debug_frame   0x00000000000001c4      0x118 build/kernel/kernel.o
- .debug_frame   0x00000000000002dc       0x50 build/kernel/mailbox.o
- .debug_frame   0x000000000000032c       0xb0 build/kernel/ps2Keyboard.o
- .debug_frame   0x00000000000003dc       0xd0 build/kernel/string.o
- .debug_frame   0x00000000000004ac       0xe4 build/kernel/uart.o
+.debug_frame    0x0000000000000000      0xa98
+ .debug_frame   0x0000000000000000       0x70 build/kernel/directory.o
+ .debug_frame   0x0000000000000070       0xb0 build/kernel/file.o
+ .debug_frame   0x0000000000000120      0x1c4 build/kernel/frameBuffer.o
+ .debug_frame   0x00000000000002e4       0xcc build/kernel/fs.o
+ .debug_frame   0x00000000000003b0      0x13c build/kernel/kernel.o
+ .debug_frame   0x00000000000004ec       0x50 build/kernel/mailbox.o
+ .debug_frame   0x000000000000053c       0x70 build/kernel/memory.o
+ .debug_frame   0x00000000000005ac       0xb0 build/kernel/pmm.o
+ .debug_frame   0x000000000000065c       0xc8 build/kernel/process.o
+ .debug_frame   0x0000000000000724       0xb0 build/kernel/ps2Keyboard.o
+ .debug_frame   0x00000000000007d4      0x110 build/kernel/string.o
+ .debug_frame   0x00000000000008e4       0xe4 build/kernel/uart.o
+ .debug_frame   0x00000000000009c8       0xd0 build/kernel/vmm.o
+
+.debug_ranges   0x0000000000000000       0x18
+ .debug_ranges  0x0000000000000000       0x18 build/kernel/fs.o

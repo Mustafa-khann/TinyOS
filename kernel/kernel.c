@@ -3,11 +3,11 @@
 #include "../include/frameBuffer.h"
 #include "../include/uart.h"
 #include "../include/font.h"
+#include "../include/fs.h"
 
 // libraries
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
 #include <stdio.h>
 // vars
 #define MAX_CMD_LENGTH 256
@@ -37,17 +37,75 @@ void get_memory_stats(unsigned int* total, unsigned int* used) {
     *used = (unsigned int)(heap_end - (char*)&__end);
 }
 
+void parse_command(const char* input, char* cmd, char* arg1, char* arg2) {
+    int i = 0, j = 0;
+
+    // Parse command
+    while (input[i] != ' ' && input[i] != '\0') {
+        cmd[j++] = input[i++];
+    }
+    cmd[j] = '\0';
+
+    // Skip spaces
+    while (input[i] == ' ') i++;
+
+    // Parse first argument
+    j = 0;
+    while (input[i] != ' ' && input[i] != '\0') {
+        arg1[j++] = input[i++];
+    }
+    arg1[j] = '\0';
+
+    // Skip spaces
+    while (input[i] == ' ') i++;
+
+    // Parse second argument
+    j = 0;
+    while (input[i] != ' ' && input[i] != '\0') {
+        arg2[j++] = input[i++];
+    }
+    arg2[j] = '\0';
+}
+
 void process_command(void) {
+    char cmd[MAX_CMD_LENGTH];
+    char arg1[MAX_CMD_LENGTH];
+    char arg2[MAX_CMD_LENGTH];
+
+    parse_command(cmd_buffer, cmd, arg1, arg2);
+
+    if (strcmp(cmd, "touch") == 0) {
+        if (fs_create_file(arg1) == 0) {
+            draw_string(0, (cursor_y + 1) * 16, "File created successfully", 0xFFFFFF);
+        } else {
+            draw_string(0, (cursor_y + 1) * 16, "Failed to create file", 0xFFFFFF);
+        }
+    } else if (strcmp(cmd, "mkdir") == 0) {
+        if (fs_create_directory(arg1) == 0) {
+            draw_string(0, (cursor_y + 1) * 16, "Directory created successfully", 0xFFFFFF);
+        } else {
+            draw_string(0, (cursor_y + 1) * 16, "Failed to create directory", 0xFFFFFF);
+        }
+    } else if (strcmp(cmd, "rm") == 0) {
+        if (fs_delete(arg1) == 0) {
+            draw_string(0, (cursor_y + 1) * 16, "File/directory deleted successfully", 0xFFFFFF);
+        } else {
+            draw_string(0, (cursor_y + 1) * 16, "Failed to delete file/directory", 0xFFFFFF);
+        }
+    } else if (strcmp(cmd, "ls") == 0) {
+        char buffer[1024];
+        if (fs_list_directory(arg1, buffer, sizeof(buffer)) == 0) {
+            draw_string(0, (cursor_y + 1) * 16, buffer, 0xFFFFFF);
+        } else {
+            draw_string(0, (cursor_y + 1) * 16, "Failed to list directory", 0xFFFFFF);
+        }
+    }
     if (strcmp(cmd_buffer, "hello") == 0) {
         draw_string(0, (cursor_y + 1) * 16, "Hello, world!", 0xFFFFFF);
     } else if (strcmp(cmd_buffer, "clear") == 0) {
         clearScreen();
         cursor_x = 0;
         cursor_y = 0;
-    } else if (strcmp(cmd_buffer, "ls") == 0) {
-        draw_string(0, (cursor_y + 1) * 16, "kernel.img boot.img config.txt", 0xFFFFFF);
-    } else if (strcmp(cmd_buffer, "pwd") == 0) {
-        draw_string(0, (cursor_y + 1) * 16, "/root", 0xFFFFFF);
     } else if (strcmp(cmd_buffer, "date") == 0) {
         unsigned int ticks = get_system_clock();
         unsigned int seconds = ticks / 1000;
