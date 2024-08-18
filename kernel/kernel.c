@@ -76,28 +76,28 @@ void process_command(void) {
 
     if (strcmp(cmd, "touch") == 0) {
         if (fs_create_file(arg1) == 0) {
-            draw_string(0, (cursor_y + 1) * 16, "File created successfully", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "File created successfully", 0xFFFFFF);
         } else {
-            draw_string(0, (cursor_y + 1) * 16, "Failed to create file", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "Failed to create file", 0xFFFFFF);
         }
     } else if (strcmp(cmd, "mkdir") == 0) {
         if (fs_create_directory(arg1) == 0) {
-            draw_string(0, (cursor_y + 1) * 16, "Directory created successfully", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "Directory created successfully", 0xFFFFFF);
         } else {
-            draw_string(0, (cursor_y + 1) * 16, "Failed to create directory", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "Failed to create directory", 0xFFFFFF);
         }
     } else if (strcmp(cmd, "rm") == 0) {
         if (fs_delete(arg1) == 0) {
-            draw_string(0, (cursor_y + 1) * 16, "File/directory deleted successfully", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "File/directory deleted successfully", 0xFFFFFF);
         } else {
-            draw_string(0, (cursor_y + 1) * 16, "Failed to delete file/directory", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "Failed to delete file/directory", 0xFFFFFF);
         }
     } else if (strcmp(cmd, "ls") == 0) {
         char buffer[1024];
         if (fs_list_directory(arg1, buffer, sizeof(buffer)) == 0) {
-            draw_string(0, (cursor_y + 1) * 16, buffer, 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, buffer, 0xFFFFFF);
         } else {
-            draw_string(0, (cursor_y + 1) * 16, "Failed to list directory", 0xFFFFFF);
+            draw_string(0, (cursor_y + 1) * 20, "Failed to list directory", 0xFFFFFF);
         }
     }
     if (strcmp(cmd_buffer, "hello") == 0) {
