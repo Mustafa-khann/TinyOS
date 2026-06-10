@@ -4,6 +4,9 @@
 #include "../include/uart.h"
 #include "../include/font.h"
 #include "../include/fs.h"
+#include "../include/robot.h"
+#include "../include/rshell.h"
+#include "../include/rt.h"
 
 // libraries
 #include <stdbool.h>
@@ -73,6 +76,19 @@ void process_command(void) {
     char arg2[MAX_CMD_LENGTH];
 
     parse_command(cmd_buffer, cmd, arg1, arg2);
+
+    // Robot stack commands print over the serial console.
+    if (robot_shell_command(cmd_buffer)) {
+        draw_string(0, (cursor_y + 1) * 16, "[robot] output on serial console", 0xFFFFFF);
+        cursor_y += 2;
+        if (cursor_y >= SCREEN_HEIGHT) {
+            scroll_screen();
+            cursor_y = SCREEN_HEIGHT - 1;
+        }
+        cmd_index = 0;
+        memset(cmd_buffer, 0, MAX_CMD_LENGTH);
+        return;
+    }
 
     if (strcmp(cmd, "touch") == 0) {
         if (fs_create_file(arg1) == 0) {
@@ -184,6 +200,7 @@ void process_command(void) {
             "uname - Print OS information",
             "free - Show memory usage",
             "calc <num1> <op> <num2> - Simple calculator",
+            "rhelp - Robot stack commands (serial console)",
             "help - Show this help message"
         };
         for (int i = 0; i < sizeof(help_text) / sizeof(help_text[0]); i++) {
@@ -210,18 +227,23 @@ void handle_keyboard_input(void) {
     int c = uart_getc_nb();
     if (c != -1) {
         if (c == '\r') {
+            uart_puts("\r\n");
             clear_cursor(cursor_x, cursor_y);
             cursor_x = 0;
             process_command();
             draw_string(cursor_x * 8, cursor_y * 16, "$ ", 0xFFFFFF);
+            uart_puts("$ ");
             cursor_x = 2;
-        } else if (c == '\b' && cmd_index > 0) {
+        } else if ((c == '\b' || c == 127) && cmd_index > 0) {
             cmd_index--;
+            cmd_buffer[cmd_index] = '\0';
+            uart_puts("\b \b");
             clear_cursor(cursor_x, cursor_y);
             cursor_x--;
             draw_char(cursor_x * 8, cursor_y * 16, ' ', 0xFFFFFF);
         } else if (cmd_index < MAX_CMD_LENGTH - 1 && c >= 32 && c <= 126) {
             cmd_buffer[cmd_index++] = c;
+            uart_putc(c);
             draw_char(cursor_x * 8, cursor_y * 16, c, 0xFFFFFF);
             cursor_x++;
         }
@@ -238,6 +260,11 @@ void handle_keyboard_input(void) {
 
 static inline int abs(int value) {
     return value < 0 ? -value : value;
+}
+
+static void shell_task(void) {
+    handle_keyboard_input();
+    draw_cursor(cursor_x, cursor_y);
 }
 
 char* itoa(int value, int base) {
@@ -313,15 +340,16 @@ void kernel_main(void) {
     delay(500);
 
     clearScreen();
-        draw_string(0, 0, "Welcome to TinyOS!", 0xFFFFFF);
-        draw_string(0, 16, "$ ", 0xFFFFFF);
-        cursor_x = 2;
-        cursor_y = 1;
+    draw_string(0, 0, "Welcome to TinyOS!", 0xFFFFFF);
+    draw_string(0, 16, "$ ", 0xFFFFFF);
+    cursor_x = 2;
+    cursor_y = 1;
 
-        while (1) {
-            handle_keyboard_input();
-            draw_cursor(cursor_x, cursor_y);
-            delay(10); // Small delay to prevent busy-waiting
-            clear_cursor(cursor_x, cursor_y);
-        }
-    }
+    // Bring up the robot stack (timer, topics, HAL, world model, planner)
+    // and run everything - including this shell - as rate-scheduled tasks.
+    robot_init();
+    rt_register("shell", shell_task, 5000); // poll input at 200 Hz
+
+    uart_puts("TinyOS robot console. Type 'rhelp' for robot commands.\r\n$ ");
+    rt_run();
+}

@@ -62,10 +62,6 @@ void draw_char(int x, int y, char c, uint32_t color) {
 
     const unsigned char * glyph = font[((unsigned char) c)-32];
 
-    uart_puts("Drawing character '");
-    uart_putc(c);
-    uart_puts("' glyph:\n");
-
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (glyph[j] & (1 << i)) {
@@ -73,21 +69,9 @@ void draw_char(int x, int y, char c, uint32_t color) {
                 unsigned char g = (color >> 8) & 0xFF;
                 unsigned char b = color & 0xFF;
                 put_pixel(x + j, y + i, r, g, b);
-                uart_putc('#');
-            } else {
-                uart_putc('.');
             }
         }
-        uart_puts("\n");
     }
-
-    uart_puts("Drew character '");
-    uart_putc(c);
-    uart_puts("' at (");
-    uart_puts(itoa(x, 10));
-    uart_puts(", ");
-    uart_puts(itoa(y, 10));
-    uart_puts(")\n");
 }
 
 void draw_string(int x, int y, const char* str, uint32_t color) {
@@ -97,15 +81,7 @@ void draw_string(int x, int y, const char* str, uint32_t color) {
         offsetX += 8; // Move to the next character position
         str++;
     }
-
-    // Debug output
-    uart_puts("String drawn at (");
-    uart_puts(itoa(x, 10));
-    uart_puts(", ");
-    uart_puts(itoa(y, 10));
-    uart_puts("): ");
-    uart_puts(str);
-    uart_puts("\n");
+    (void)x;
 }
 
 // Function to draw a single character rotated 90 degrees clockwise and scaled up

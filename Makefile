@@ -8,13 +8,15 @@ OBJDUMP = $(ARMGNU)-objdump
 # Remove -O2 for now to disable optimizations
 CFLAGS = -mcpu=cortex-a7 -fpic -ffreestanding -Wall -Wextra -I./include -g -O0
 ASMFLAGS = -mcpu=cortex-a7
-LDFLAGS = -T linker.ld -Map=$(BUILD_DIR)/kernel.map
+# Link through the gcc driver so libgcc provides 64-bit helper routines
+# (used by the Q16.16 fixed-point math in the robot stack).
+LDFLAGS = -T linker.ld -nostdlib -Wl,-Map=$(BUILD_DIR)/kernel.map
 
 SRC_DIR = .
 BUILD_DIR = build
 
 # Explicitly list all C source files
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c robot/*.c)
 ASM_SOURCES = $(wildcard boot/*.S)
 OBJ_FILES = $(patsubst %.c,$(BUILD_DIR)/%.o,$(C_SOURCES))
 OBJ_FILES += $(patsubst %.S,$(BUILD_DIR)/%.o,$(ASM_SOURCES))
@@ -30,7 +32,7 @@ $(BUILD_DIR)/%.o: %.S
 	$(AS) $(ASMFLAGS) $< -o $@
 
 $(BUILD_DIR)/kernel.elf: $(OBJ_FILES)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^ -lgcc
 	$(OBJDUMP) -D $@ > $(BUILD_DIR)/kernel_disassembly.txt
 	$(OBJDUMP) -s -j .rodata $@ > $(BUILD_DIR)/rodata_dump.txt
 

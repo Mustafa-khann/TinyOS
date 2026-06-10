@@ -30,10 +30,10 @@ _start:
     ldr r0, =_vector_table
     mcr p15, 0, r0, c12, c0, 0  // Set VBAR
 
-    // Enable IRQ
-    mrs r0, cpsr
-    bic r0, r0, #0x80
-    msr cpsr_c, r0
+    // Keep IRQs masked: the robot stack runs fully polled off the free-
+    // running system timer, and no interrupt sources are configured. The
+    // old code unmasked IRQs against a vector table whose irq slot pointed
+    // at its own literal word, so any stray interrupt executed data.
 
     // Jump to kernel_main
     bl kernel_main

@@ -1,6 +1,9 @@
 SECTIONS
 {
-    . = 0x8000;
+    /* QEMU loads raw -kernel binaries at 0x10000 on the raspi machines,
+     * so link there to keep linked == loaded addresses. On real hardware
+     * set `kernel_address=0x10000` in config.txt to match. */
+    . = 0x10000;
     __start = .;
 
     .text : {

@@ -1,6 +1,6 @@
 # Tiny-OS
 
-A minimal operating system built from scratch for the Raspberry Pi, developed and tested using QEMU for ARM emulation.
+A from-scratch operating system for the Raspberry Pi, developed and tested under QEMU, now growing into a **robot operating system built around world models**: the OS maintains a continuously-updated belief about the robot and its environment, and the entire stack — sensing, prediction, planning, actuation — runs through that model. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full design.
 
 **Table of Contents**
 
@@ -21,13 +21,22 @@ Tiny-Pi-OS is a personal project aimed at creating a simple operating system for
 
 **Features**
 
-* Basic Bootloader in Assembly
-* Simple Kernel in C
-* Memory Management
-* Basic I/O Handling
-* Process Management and Scheduling
-* File System Support (FAT32)
-* Interrupt Handling
+Robot stack (world-model centric):
+
+* Monotonic time base on the BCM2835 1 MHz system timer
+* Cooperative rate-monotonic real-time executive with per-task runtime stats
+* Publish/subscribe topic bus (`imu`, `odom`, `range`, `cmd_vel`)
+* Sensor/actuator HAL — QEMU backend is a built-in differential-drive simulator with noisy IMU, wheel encoders, 5-ray rangefinder and motor dynamics
+* World model: belief state (pose, velocity, uncertainty) with dynamics-model prediction, sensor-fusion correction and obstacle memory
+* Model-predictive planner: samples actions, rolls them out through the world model, drives to goals around obstacles
+* Q16.16 fixed-point math library (no FPU required)
+* Robot console over UART (`wm`, `goto`, `predict`, `tasks`, `topics`, ...)
+
+Base kernel:
+
+* Bootloader in Assembly, kernel in C
+* UART and mailbox/framebuffer drivers, text shell
+* Basic memory management and in-RAM file system
 
 **Requirements**
 
@@ -53,16 +62,32 @@ Tiny-Pi-OS is a personal project aimed at creating a simple operating system for
 ### Building and Running Tiny-Pi-OS
 
 1. **Build the OS:** `make`
-2. **Run the OS in QEMU:** `qemu-system-arm -M versatilepb -kernel kernel.img -serial stdio`
+2. **Run the OS in QEMU:** `make run` (or `qemu-system-arm -M raspi2b -kernel build/kernel.img -serial stdio`)
+
+Then drive the robot from the serial console:
+
+```
+$ rhelp                # list robot commands
+$ telemetry            # 1 Hz belief-vs-truth printout
+$ goto 2.5 -0.3        # navigate to (x, y) meters, avoiding obstacles
+$ status               # planner state and chosen action
+$ wm                   # world-model belief vs simulator ground truth
+$ predict 500          # roll the world model 500 ms into the future
+$ tasks                # real-time executive stats
+```
+
+Note: the kernel links at `0x10000` (where QEMU's raspi machines load raw images). On real hardware add `kernel_address=0x10000` to `config.txt`.
 
 **Development**
 
 ### Project Structure
 
-* `boot/`: Contains the bootloader code in Assembly.
-* `build/`: Contains build files.
-* `include/`: Contains header files.
-* `kernel/`: Contains the kernel code in C.
+* `boot/`: Bootloader (Assembly).
+* `build/`: Build output.
+* `include/`: Header files.
+* `kernel/`: Base kernel (UART, framebuffer, shell, memory, FS).
+* `robot/`: Robot stack — timer, executive, topic bus, HAL, simulator, world model, planner, console.
+* `docs/`: Architecture documentation.
 * `linker.ld`: Linker script.
 * `Makefile`: Build instructions.
 
